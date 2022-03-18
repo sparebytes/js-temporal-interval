@@ -21,20 +21,28 @@ setTemporalPolyfill(Temporal);
 
 // PlainDateTime Interval
 const plainDateTimeInterval = new Interval(
-  Temporal.PlainDateTime.from("1990-01-01"),
-  Temporal.PlainDateTime.from("2040-01-01"),
+  Temporal.PlainDateTime.from("2000-01-01"),
+  Temporal.PlainDateTime.from("2000-01-02"),
 );
 
 // Instant Interval
-const instantInterval = new Interval(
-  Temporal.Instant.from("1990-01-01Z"),
-  Temporal.Instant.from("2040-01-01Z"),
+const interval = new Interval(
+  Temporal.Instant.from("2000-01-01Z"),
+  Temporal.Instant.from("2000-01-02Z"),
 );
 
-instantInterval.contains(instant);
-instantInterval.equals(other);
-instantInterval.encloses(other);
-instantInterval.intersects(other);
-instantInterval.toDuration(Temporal.Duration.from("PT1H"));
-Array.from(instantInterval.iterate(Temporal.Duration.from("PT1H")));
+const other = new Interval(
+  Temporal.Instant.from("2000-01-02Z"),
+  Temporal.Instant.from("2000-01-03Z"),
+);
+
+const { log } = console;
+log("      toString:", interval.toString());
+log("JSON.stringify:", JSON.stringify(interval));
+log("      contains:", interval.contains(Temporal.Instant.from("2000-01-01Z")));
+log("        equals:", interval.equals(other));
+log("      encloses:", interval.encloses(other));
+log("    intersects:", interval.intersects(other));
+log("    toDuration:", interval.toDuration(Temporal.Duration.from("PT1H")));
+log("       iterate:", Array.from(interval.iterate(Temporal.Duration.from("PT1H"))));
 ```
