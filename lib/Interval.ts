@@ -39,7 +39,7 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
    * Does this interval contain point b?
    * Assumes start is inclusive and end is exclusive
    */
-  contains(b: T) {
+  contains(b: T): boolean {
     const { _compare } = this;
     return _compare(this._start, b) <= 0 && _compare(this._end, b) > 0;
   }
@@ -47,7 +47,7 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
   /**
    * Is this interval the same as another?
    */
-  equals(b: Interval<T>) {
+  equals(b: Interval<T>): boolean {
     const { _compare } = this;
     return _compare(this._start, b._start) === 0 && _compare(this._end, b._end) === 0;
   }
@@ -56,7 +56,7 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
    * Does this interval fully wrap another?
    * Assumes start is inclusive and end is exclusive
    */
-  encloses(b: Interval<T>) {
+  encloses(b: Interval<T>): boolean {
     const { _compare } = this;
     return _compare(this._start, b._start) <= 0 && _compare(this._end, b._end) > 0;
   }
@@ -65,7 +65,7 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
    * Does this interval overlap another?
    * Assumes start is inclusive and end is exclusive
    */
-  intersects(b: Interval<T>) {
+  intersects(b: Interval<T>): boolean {
     const { _compare } = this;
     const aS_bS = _compare(this._start, b._start);
     const aS_bE = _compare(this._start, b._end);
@@ -73,13 +73,49 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
     const aE_bE = _compare(this._end, b._end);
     return (aS_bS >= 0 && aS_bE < 0) || (aE_bS > 0 && aE_bE <= 0) || (aS_bS <= 0 && aE_bE >= 0);
   }
+  /**
+   * What is the duration between the start and end?
+   */
+  toDuration(
+    options?: T extends Temporal.Instant
+      ? Temporal.DifferenceOptions<
+          "hour" | "minute" | "second" | "millisecond" | "microsecond" | "nanosecond"
+        >
+      : T extends Temporal.PlainDateTime
+      ? Temporal.DifferenceOptions<
+          | "year"
+          | "month"
+          | "week"
+          | "day"
+          | "hour"
+          | "minute"
+          | "second"
+          | "millisecond"
+          | "microsecond"
+          | "nanosecond"
+        >
+      : never,
+  ): Temporal.Duration {
+    return this._end.since(this._start as any, options as any);
+  }
 
   /**
-   * Generate a sequence of evenly spaced points
+   * Generate a sequence of evenly spaced points.
+   * The end is exclusive by default
    */
-  *iterate(duration: Temporal.Duration) {
+  *iterate(
+    duration: Temporal.Duration,
+    endInclusive: boolean = false,
+  ): Generator<T, void, unknown> {
+    if (duration.sign <= 0) {
+      throw new RangeError("duration must be positive.");
+    }
+    const { _compare, _end } = this;
     let value: T = this._start;
-    while (this.contains(value)) {
+    const isContained = endInclusive
+      ? () => _compare(_end, value) >= 0
+      : () => _compare(_end, value) > 0;
+    while (isContained()) {
       yield value;
       value = value.add(duration) as T;
     }

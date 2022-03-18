@@ -98,6 +98,34 @@ describe("Instant", () => {
       expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
     });
   });
+
+  describe("Duration", () => {
+    it("toDuration", () => {
+      expect(T.Duration.compare(iCenter.toDuration(), "P7305D")).toBe(0);
+    });
+  });
+
+  describe("Iterate", () => {
+    it("iterate", () => {
+      const actual = Array.from(
+        new Interval(
+          T.Instant.from("2000-01-01T01:00:00Z"),
+          T.Instant.from("2000-01-01T06:00:00Z"),
+        ).iterate(T.Duration.from("PT1H")),
+      );
+      const expected = [
+        T.Instant.from("2000-01-01T01:00:00Z"),
+        T.Instant.from("2000-01-01T02:00:00Z"),
+        T.Instant.from("2000-01-01T03:00:00Z"),
+        T.Instant.from("2000-01-01T04:00:00Z"),
+        T.Instant.from("2000-01-01T05:00:00Z"),
+      ];
+      expect(actual.length).toBe(expected.length);
+      for (let i = 0; i < actual.length; i++) {
+        expect(actual[i].toString()).toBe(expected[i].toString());
+      }
+    });
+  });
 });
 
 describe("PlainDateTime", () => {
@@ -181,6 +209,32 @@ describe("PlainDateTime", () => {
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
       expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+    });
+  });
+
+  describe("toDuration", () => {
+    expect(T.Duration.compare(iCenter.toDuration(), "P7305D")).toBe(0);
+  });
+
+  describe("Iterate", () => {
+    it("iterate", () => {
+      const actual = Array.from(
+        new Interval(
+          T.PlainDateTime.from("2000-01-01"),
+          T.PlainDateTime.from("2000-01-06"),
+        ).iterate(T.Duration.from("P1D")),
+      );
+      const expected = [
+        T.PlainDateTime.from("2000-01-01"),
+        T.PlainDateTime.from("2000-01-02"),
+        T.PlainDateTime.from("2000-01-03"),
+        T.PlainDateTime.from("2000-01-04"),
+        T.PlainDateTime.from("2000-01-05"),
+      ];
+      expect(actual.length).toBe(expected.length);
+      for (let i = 0; i < actual.length; i++) {
+        expect(actual[i].toString()).toBe(expected[i].toString());
+      }
     });
   });
 });
