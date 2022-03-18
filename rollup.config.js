@@ -7,10 +7,10 @@ const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export default [
   {
-    input: "lib/Interval.ts",
+    input: "lib/index.ts",
     external: ["@js-temporal/polyfill"],
     output: [
-      { file: pkg.main, format: "cjs" },
+      { file: pkg.main, format: "cjs", exports: "named" },
       { file: pkg.module, format: "es" },
     ],
     plugins: [

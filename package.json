@@ -1,6 +1,6 @@
 {
   "name": "temporal-interval",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Interval class for use with Temporal Instant and PlainDateTime",
   "license": "ISC",
   "repository": {
@@ -68,7 +68,7 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "typescript": "^4.6.2"
   },
-  "types": "./Interval.d.ts",
+  "types": "./dist/Interval.d.ts",
   "browser": "./dist/index.umd.js",
   "directories": {
     "lib": "lib",
