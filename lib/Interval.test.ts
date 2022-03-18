@@ -126,6 +126,17 @@ describe("Instant", () => {
       }
     });
   });
+
+  describe("Encoding", () => {
+    it("toString", () => {
+      expect(iCenter.toString()).toBe("2005-01-01T00:00:00Z--2025-01-01T00:00:00Z");
+    });
+    it("JSON.stringify", () => {
+      expect(JSON.stringify(iCenter)).toBe(
+        '{"start":"2005-01-01T00:00:00Z","end":"2025-01-01T00:00:00Z"}',
+      );
+    });
+  });
 });
 
 describe("PlainDateTime", () => {
@@ -235,6 +246,17 @@ describe("PlainDateTime", () => {
       for (let i = 0; i < actual.length; i++) {
         expect(actual[i].toString()).toBe(expected[i].toString());
       }
+    });
+  });
+
+  describe("Encoding", () => {
+    it("toString", () => {
+      expect(iCenter.toString()).toBe("2005-01-01T00:00:00--2025-01-01T00:00:00");
+    });
+    it("JSON.stringify", () => {
+      expect(JSON.stringify(iCenter)).toBe(
+        '{"start":"2005-01-01T00:00:00","end":"2025-01-01T00:00:00"}',
+      );
     });
   });
 });
