@@ -1,0 +1,77 @@
+{
+  "name": "temporal-interval",
+  "version": "0.0.1",
+  "description": "Interval class for use with Temporal Instant and PlainDateTime",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-temporal/temporal-polyfill.git"
+  },
+  "author": "Franklin Davenport <sparebytes@gmail.com>",
+  "homepage": "https://github.com/sparebytes/js-temporal-interval#readme",
+  "bugs": {
+    "url": "https://github.com/sparebytes/js-temporal-interval/issues"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.esm.js",
+  "type": "module",
+  "exports": {
+    ".": [
+      {
+        "import": "./dist/index.esm.js",
+        "default": "./dist/index.cjs"
+      },
+      "./dist/index.cjs"
+    ]
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --emitDeclarationOnly && rollup -c",
+    "dev": "rollup -c -w",
+    "test": "tsc --noEmit && jest"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "DateTime",
+    "Duration",
+    "Interval",
+    "Instant",
+    "Temporal"
+  ],
+  "peerDependencies": {
+    "@js-temporal/polyfill": "^0.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@js-temporal/polyfill": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.17.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
+    "@js-temporal/polyfill": "^0.4.0",
+    "babel-jest": "^27.5.1",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.0",
+    "rollup": "^1.0.0",
+    "rollup-plugin-babel": "^4.2.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "typescript": "^4.6.2"
+  },
+  "types": "./Interval.d.ts",
+  "browser": "./dist/index.umd.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  }
+}
