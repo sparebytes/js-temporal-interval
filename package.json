@@ -1,11 +1,11 @@
 {
   "name": "temporal-interval",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Interval class for use with Temporal Instant and PlainDateTime",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/js-temporal/temporal-polyfill.git"
+    "url": "git+https://github.com/sparebytes/js-temporal-interval.git"
   },
   "author": "Franklin Davenport <sparebytes@gmail.com>",
   "homepage": "https://github.com/sparebytes/js-temporal-interval#readme",
