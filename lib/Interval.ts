@@ -3,17 +3,25 @@ type Instant = Temporal.Instant;
 type PlainDateTime = Temporal.PlainDateTime;
 type ZonedDateTime = Temporal.ZonedDateTime;
 type Duration = Temporal.Duration;
+type PlainDate = Temporal.PlainDate;
+type PlainYearMonth = Temporal.PlainYearMonth;
 type TypeOfTemporal = ReturnType<typeof getTemporalPolyfill>;
 
 import { getTemporalPolyfill } from "./temporalPolyfill";
 
-export default class Interval<T extends Instant | PlainDateTime | ZonedDateTime> {
-  private readonly _type: T extends Instant
+export default class Interval<
+  T extends ZonedDateTime | Instant | PlainDateTime | PlainDate | PlainYearMonth,
+> {
+  private readonly _type: T extends ZonedDateTime
+    ? TypeOfTemporal["ZonedDateTime"]
+    : T extends Instant
     ? TypeOfTemporal["Instant"]
     : T extends PlainDateTime
     ? TypeOfTemporal["PlainDateTime"]
-    : T extends ZonedDateTime
-    ? TypeOfTemporal["ZonedDateTime"]
+    : T extends PlainDate
+    ? TypeOfTemporal["PlainDate"]
+    : T extends PlainYearMonth
+    ? TypeOfTemporal["PlainYearMonth"]
     : never;
   private readonly _compare: (a: T, b: T) => Temporal.ComparisonResult;
   readonly start: T;
@@ -36,9 +44,11 @@ export default class Interval<T extends Instant | PlainDateTime | ZonedDateTime>
     });
 
     if (
-      this._type !== Temporal.Instant &&
       this._type !== Temporal.ZonedDateTime &&
-      this._type !== Temporal.PlainDateTime
+      this._type !== Temporal.Instant &&
+      this._type !== Temporal.PlainDateTime &&
+      this._type !== Temporal.PlainDate &&
+      this._type !== Temporal.PlainYearMonth
     ) {
       throw new TypeError(`start is not of type Temporal.Instant or Temporal.PlainDateTime.`);
     }
