@@ -129,6 +129,41 @@ export default class Interval<
   }
 
   /**
+   * Returns interval with the maximum start time and the minimum end time of the two intervals.
+   */
+  intersection(other: Interval<T>): Interval<T> | null {
+    const { start: aS, end: aE, _compare } = this;
+    const { start: bS, end: bE } = other;
+    const maxStart = _compare(aS, bS) > 0 ? aS : bS;
+    const minEnd = _compare(aE, bE) < 0 ? aE : bE;
+    return _compare(maxStart, minEnd) <= 0 ? new Interval(maxStart, minEnd) : null;
+  }
+
+  /**
+   * Returns interval with the minimum start time and the maximum end time of the two intervals.
+   */
+  union(
+    other: Interval<T>,
+    options?: {
+      /** throw if the intervals do not overlap or touch */
+      strict?: boolean;
+    },
+  ): Interval<T> | null {
+    const { start: aS, end: aE, _compare } = this;
+    const { start: bS, end: bE } = other;
+    if (options?.strict) {
+      const maxStart = _compare(aS, bS) > 0 ? aS : bS;
+      const minEnd = _compare(aE, bE) < 0 ? aE : bE;
+      if (_compare(maxStart, minEnd) > 0) {
+        throw new RangeError("the intervals must touch or overlap when performing a strict union");
+      }
+    }
+    const minStart = _compare(aS, bS) < 0 ? aS : bS;
+    const maxEnd = _compare(aE, bE) > 0 ? aE : bE;
+    return new Interval(minStart, maxEnd);
+  }
+
+  /**
    * Generate a sequence of evenly spaced points.
    * The end is exclusive by default
    * The duration must be positive.

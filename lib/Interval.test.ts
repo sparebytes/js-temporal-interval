@@ -40,6 +40,7 @@ describe("Type Validation", () => {
 
 describe("ZonedDateTime", () => {
   testIntervals({
+    TemporalType: T.ZonedDateTime,
     pointA: T.ZonedDateTime.from("2012-01-01[utc]"),
     pointB: T.ZonedDateTime.from("2018-01-01[utc]"),
     iOuter: new Interval(
@@ -86,6 +87,7 @@ describe("ZonedDateTime", () => {
 
 describe("Instant", () => {
   testIntervals({
+    TemporalType: T.Instant,
     pointA: T.Instant.from("2012-01-01Z"),
     pointB: T.Instant.from("2018-01-01Z"),
     iOuter: new Interval(T.Instant.from("1990-01-01Z"), T.Instant.from("2040-01-01Z")),
@@ -116,6 +118,7 @@ describe("Instant", () => {
 
 describe("PlainDateTime", () => {
   testIntervals({
+    TemporalType: T.PlainDateTime,
     pointA: T.PlainDateTime.from("2012-01-01"),
     pointB: T.PlainDateTime.from("2018-01-01"),
     iOuter: new Interval(T.PlainDateTime.from("1990-01-01"), T.PlainDateTime.from("2040-01-01")),
@@ -149,6 +152,7 @@ describe("PlainDateTime", () => {
 
 describe("PlainDate", () => {
   testIntervals({
+    TemporalType: T.PlainDate,
     pointA: T.PlainDate.from("2012-01-01"),
     pointB: T.PlainDate.from("2018-01-01"),
     iOuter: new Interval(T.PlainDate.from("1990-01-01"), T.PlainDate.from("2040-01-01")),
@@ -176,6 +180,7 @@ describe("PlainDate", () => {
 
 describe("PlainYearMonth", () => {
   testIntervals({
+    TemporalType: T.PlainYearMonth,
     pointA: T.PlainYearMonth.from("2012-01-01"),
     pointB: T.PlainYearMonth.from("2018-01-01"),
     iOuter: new Interval(T.PlainYearMonth.from("1990-01-01"), T.PlainYearMonth.from("2040-01-01")),
@@ -205,6 +210,7 @@ describe("PlainYearMonth", () => {
 });
 
 function testIntervals({
+  TemporalType,
   pointA,
   pointB,
   iOuter,
@@ -281,6 +287,53 @@ function testIntervals({
     });
   });
 
+  describe("Intersection", () => {
+    it("intersection of overlapping intervals", () => {
+      expect(iLeft.intersection(iCenter).equals(new Interval(iCenter.start, iLeft.end))).toBe(true);
+    });
+    it("intersection of adjacent intervals", () => {
+      expect(
+        iLeft.intersection(iLeftAdjacent).equals(new Interval(iLeft.end, iLeftAdjacent.start)),
+      ).toBe(true);
+    });
+    it("intersection of non-touching intervals should be null", () => {
+      expect(iLeft.intersection(iRight)).toBe(null);
+    });
+  });
+
+  describe("Union", () => {
+    describe("Non-strict", () => {
+      it("union of overlapping intervals", () => {
+        expect(iLeft.union(iCenter).equals(new Interval(iLeft.start, iCenter.end))).toBe(true);
+      });
+      it("union of adjacent intervals", () => {
+        expect(
+          iLeft.union(iLeftAdjacent).equals(new Interval(iLeft.start, iLeftAdjacent.end)),
+        ).toBe(true);
+      });
+      it("union of non-touching intervals", () => {
+        expect(iLeft.union(iRight).equals(new Interval(iLeft.start, iRight.end))).toBe(true);
+      });
+    });
+    describe("Strict", () => {
+      it("strict union of overlapping intervals", () => {
+        expect(
+          iLeft.union(iCenter, { strict: true }).equals(new Interval(iLeft.start, iCenter.end)),
+        ).toBe(true);
+      });
+      it("strict union of adjacent intervals", () => {
+        expect(
+          iLeft
+            .union(iLeftAdjacent, { strict: true })
+            .equals(new Interval(iLeft.start, iLeftAdjacent.end)),
+        ).toBe(true);
+      });
+      it("strict union of non-touching intervals should throw", () => {
+        expect(() => iLeft.union(iRight, { strict: true })).toThrow();
+      });
+    });
+  });
+
   describe("Iterate", () => {
     const { disallowedDuration, allowedDuration, interval, expected } = iterate;
 
@@ -304,7 +357,6 @@ function testIntervals({
 
   describe("Duration", () => {
     it("toDuration", () => {
-      console.log(iCenter.toDuration().toString(), iCenterDuration.toString());
       expect(
         T.Duration.compare(iCenter.toDuration(), iCenterDuration, {
           relativeTo: T.ZonedDateTime.from("2020-01-01[utc]"),
