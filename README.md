@@ -25,6 +25,12 @@ const plainDateTimeInterval = new Interval(
   Temporal.PlainDateTime.from("2000-01-02"),
 );
 
+// ZonedDateTime Interval
+const zonedDateTimeInterval = new Interval(
+  Temporal.ZonedDateTime.from("2000-01-01[utc]"),
+  Temporal.ZonedDateTime.from("2000-01-02[utc]"),
+);
+
 // Instant Interval
 const interval = new Interval(
   Temporal.Instant.from("2000-01-01Z"),
