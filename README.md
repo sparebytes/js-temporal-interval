@@ -1,8 +1,14 @@
 # Temporal Interval
 
-An Interval object represents a half-open interval of time, where each endpoint is an Instant or PlainDateTime.
+An Interval object represents a half-open interval of one of the following:
 
-See https://stackblitz.com/edit/temporal-interval
+- ZonedDateTime
+- Instant
+- PlainDateTime
+- PlainDate
+- PlainYearMonth
+
+See [Stack Blitz Example](https://stackblitz.com/edit/temporal-interval)
 
 ## Installation
 
@@ -19,12 +25,6 @@ import { Temporal } from "@js-temporal/polyfill";
 import Interval, { setTemporalPolyfill } from "temporal-interval";
 setTemporalPolyfill(Temporal);
 
-// PlainDateTime Interval
-const plainDateTimeInterval = new Interval(
-  Temporal.PlainDateTime.from("2000-01-01"),
-  Temporal.PlainDateTime.from("2000-01-02"),
-);
-
 // ZonedDateTime Interval
 const zonedDateTimeInterval = new Interval(
   Temporal.ZonedDateTime.from("2000-01-01[utc]"),
@@ -32,23 +32,47 @@ const zonedDateTimeInterval = new Interval(
 );
 
 // Instant Interval
-const interval = new Interval(
+const instantInterval = new Interval(
   Temporal.Instant.from("2000-01-01Z"),
   Temporal.Instant.from("2000-01-02Z"),
 );
 
-const other = new Interval(
-  Temporal.Instant.from("2000-01-02Z"),
-  Temporal.Instant.from("2000-01-03Z"),
+// PlainDateTime Interval
+const plainDateTimeInterval = new Interval(
+  Temporal.PlainDateTime.from("2000-01-01"),
+  Temporal.PlainDateTime.from("2000-01-02"),
 );
 
-const { log } = console;
-log("      toString:", interval.toString());
-log("JSON.stringify:", JSON.stringify(interval));
-log("      contains:", interval.contains(Temporal.Instant.from("2000-01-01Z")));
-log("        equals:", interval.equals(other));
-log("      encloses:", interval.encloses(other));
-log("    intersects:", interval.intersects(other));
-log("    toDuration:", interval.toDuration(Temporal.Duration.from("PT1H")));
-log("       iterate:", Array.from(interval.iterate(Temporal.Duration.from("PT1H"))));
+// PlainDate Interval
+const plainDateInterval = new Interval(
+  Temporal.PlainDate.from("2000-01-01"),
+  Temporal.PlainDate.from("2000-01-02"),
+);
+
+// PlainYearMonth Interval
+const plainYearMonthInterval = new Interval(
+  Temporal.PlainYearMonth.from("2000-01-01"),
+  Temporal.PlainYearMonth.from("2000-01-02"),
+);
+
+function example({ interval, point, other, duration }) {
+  const { log } = console;
+  log("         start:", interval.start);
+  log("           end:", interval.end);
+  log("    contains():", interval.contains(point));
+  log("      equals():", interval.equals(other));
+  log("    encloses():", interval.encloses(other));
+  log("  intersects():", interval.intersects(other));
+  log("  toDuration():", interval.toDuration());
+  log("     iterate():", Array.from(interval.iterate(duration)));
+  log("    toString():", interval.toString());
+  log("JSON.stringify:", JSON.stringify(interval));
+}
+
+example({
+  interval: instantInterval,
+  point: instantInterval.start,
+  duration: Temporal.Duration.from("PT1H"),
+  other: new Interval(Temporal.Instant.from("2000-01-02Z"), Temporal.Instant.from("2000-01-03Z")),
+});
 ```
