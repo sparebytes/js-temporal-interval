@@ -101,9 +101,9 @@ export default class Interval<
   /**
    * Is this interval the same as another?
    */
-  equals(b: Interval<T>): boolean {
+  equals(other: Interval<T>): boolean {
     const { _compare } = this;
-    return _compare(this.start, b.start) === 0 && _compare(this.end, b.end) === 0;
+    return _compare(this.start, other.start) === 0 && _compare(this.end, other.end) === 0;
   }
 
   /**
@@ -127,33 +127,43 @@ export default class Interval<
     const aE_bE = _compare(this.end, b.end);
     return (aS_bS >= 0 && aS_bE < 0) || (aE_bS > 0 && aE_bE <= 0) || (aS_bS <= 0 && aE_bE >= 0);
   }
+
+  /**
+   * Generate a sequence of evenly spaced points.
+   * The end is exclusive by default
+   * The duration must be positive.
+   * Warning: using durations with units more precise than the interval type
+   *          may result in an error or undefined behavior.
+   */
+  *iterate(
+    duration: Temporal.DurationLike,
+    options?: {
+      endInclusive: boolean;
+    },
+  ): Generator<T, void, unknown> {
+    const _duration = getTemporalPolyfill().Duration.from(duration);
+    // TODO: print warning when duration units are more precise than this interval
+    const { _compare, end: _end } = this;
+    let value: T = this.start;
+    const isContained =
+      options?.endInclusive === true
+        ? () => _compare(_end, value) >= 0
+        : () => _compare(_end, value) > 0;
+    while (isContained()) {
+      const nextValue = value.add(_duration) as T;
+      if (_compare(nextValue, value) <= 0) {
+        throw new RangeError("duration is not large enough");
+      }
+      yield value;
+      value = nextValue;
+    }
+  }
+
   /**
    * What is the duration between the start and end?
    */
   toDuration(options?: Parameters<T["since"]>[1]): Duration {
     return this.end.since(this.start as any, options as any);
-  }
-
-  /**
-   * Generate a sequence of evenly spaced points.
-   * The end is exclusive by default
-   */
-  *iterate(
-    duration: Temporal.Duration,
-    endInclusive: boolean = false,
-  ): Generator<T, void, unknown> {
-    if (duration.sign <= 0) {
-      throw new RangeError("duration must be positive.");
-    }
-    const { _compare, end: _end } = this;
-    let value: T = this.start;
-    const isContained = endInclusive
-      ? () => _compare(_end, value) >= 0
-      : () => _compare(_end, value) > 0;
-    while (isContained()) {
-      yield value;
-      value = value.add(duration) as T;
-    }
   }
 
   toString() {
