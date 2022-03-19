@@ -88,10 +88,10 @@ describe("ZonedDateTime", () => {
   });
 
   describe("Encloses", () => {
-    it("a and b do not intersect", () => {
+    it("a and b do not overlap", () => {
       expect(iLeft.encloses(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
+    it("a and b partially overlap", () => {
       expect(iLeft.encloses(iCenter)).toBe(false);
       expect(iCenter.encloses(iLeft)).toBe(false);
     });
@@ -106,23 +106,23 @@ describe("ZonedDateTime", () => {
     });
   });
 
-  describe("Intersects", () => {
-    it("a and b do not intersect", () => {
-      expect(iLeft.intersects(iRight)).toBe(false);
+  describe("Overlaps", () => {
+    it("a and b do not overlap", () => {
+      expect(iLeft.overlaps(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
-      expect(iLeft.intersects(iCenter)).toBe(true);
-      expect(iCenter.intersects(iLeft)).toBe(true);
+    it("a and b partially overlap", () => {
+      expect(iLeft.overlaps(iCenter)).toBe(true);
+      expect(iCenter.overlaps(iLeft)).toBe(true);
     });
     it("a encloses b", () => {
-      expect(iOuter.intersects(iCenter)).toBe(true);
+      expect(iOuter.overlaps(iCenter)).toBe(true);
     });
     it("b encloses a", () => {
-      expect(iCenter.intersects(iOuter)).toBe(true);
+      expect(iCenter.overlaps(iOuter)).toBe(true);
     });
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
-      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+      expect(iLeft.overlaps(iLeftAdjacent)).toBe(false);
     });
   });
 
@@ -203,10 +203,10 @@ describe("Instant", () => {
   });
 
   describe("Encloses", () => {
-    it("a and b do not intersect", () => {
+    it("a and b do not overlap", () => {
       expect(iLeft.encloses(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
+    it("a and b partially overlap", () => {
       expect(iLeft.encloses(iCenter)).toBe(false);
       expect(iCenter.encloses(iLeft)).toBe(false);
     });
@@ -221,23 +221,23 @@ describe("Instant", () => {
     });
   });
 
-  describe("Intersects", () => {
-    it("a and b do not intersect", () => {
-      expect(iLeft.intersects(iRight)).toBe(false);
+  describe("Overlaps", () => {
+    it("a and b do not overlap", () => {
+      expect(iLeft.overlaps(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
-      expect(iLeft.intersects(iCenter)).toBe(true);
-      expect(iCenter.intersects(iLeft)).toBe(true);
+    it("a and b partially overlap", () => {
+      expect(iLeft.overlaps(iCenter)).toBe(true);
+      expect(iCenter.overlaps(iLeft)).toBe(true);
     });
     it("a encloses b", () => {
-      expect(iOuter.intersects(iCenter)).toBe(true);
+      expect(iOuter.overlaps(iCenter)).toBe(true);
     });
     it("b encloses a", () => {
-      expect(iCenter.intersects(iOuter)).toBe(true);
+      expect(iCenter.overlaps(iOuter)).toBe(true);
     });
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
-      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+      expect(iLeft.overlaps(iLeftAdjacent)).toBe(false);
     });
   });
 
@@ -331,10 +331,10 @@ describe("PlainDateTime", () => {
   });
 
   describe("Encloses", () => {
-    it("a and b do not intersect", () => {
+    it("a and b do not overlap", () => {
       expect(iLeft.encloses(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
+    it("a and b partially overlap", () => {
       expect(iLeft.encloses(iCenter)).toBe(false);
       expect(iCenter.encloses(iLeft)).toBe(false);
     });
@@ -349,23 +349,23 @@ describe("PlainDateTime", () => {
     });
   });
 
-  describe("Intersects", () => {
-    it("a and b do not intersect", () => {
-      expect(iLeft.intersects(iRight)).toBe(false);
+  describe("Overlaps", () => {
+    it("a and b do not overlap", () => {
+      expect(iLeft.overlaps(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
-      expect(iLeft.intersects(iCenter)).toBe(true);
-      expect(iCenter.intersects(iLeft)).toBe(true);
+    it("a and b partially overlap", () => {
+      expect(iLeft.overlaps(iCenter)).toBe(true);
+      expect(iCenter.overlaps(iLeft)).toBe(true);
     });
     it("a encloses b", () => {
-      expect(iOuter.intersects(iCenter)).toBe(true);
+      expect(iOuter.overlaps(iCenter)).toBe(true);
     });
     it("b encloses a", () => {
-      expect(iCenter.intersects(iOuter)).toBe(true);
+      expect(iCenter.overlaps(iOuter)).toBe(true);
     });
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
-      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+      expect(iLeft.overlaps(iLeftAdjacent)).toBe(false);
     });
   });
 
@@ -442,10 +442,10 @@ describe("Instant", () => {
   });
 
   describe("Encloses", () => {
-    it("a and b do not intersect", () => {
+    it("a and b do not overlap", () => {
       expect(iLeft.encloses(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
+    it("a and b partially overlap", () => {
       expect(iLeft.encloses(iCenter)).toBe(false);
       expect(iCenter.encloses(iLeft)).toBe(false);
     });
@@ -460,23 +460,23 @@ describe("Instant", () => {
     });
   });
 
-  describe("Intersects", () => {
-    it("a and b do not intersect", () => {
-      expect(iLeft.intersects(iRight)).toBe(false);
+  describe("Overlaps", () => {
+    it("a and b do not overlap", () => {
+      expect(iLeft.overlaps(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
-      expect(iLeft.intersects(iCenter)).toBe(true);
-      expect(iCenter.intersects(iLeft)).toBe(true);
+    it("a and b partially overlap", () => {
+      expect(iLeft.overlaps(iCenter)).toBe(true);
+      expect(iCenter.overlaps(iLeft)).toBe(true);
     });
     it("a encloses b", () => {
-      expect(iOuter.intersects(iCenter)).toBe(true);
+      expect(iOuter.overlaps(iCenter)).toBe(true);
     });
     it("b encloses a", () => {
-      expect(iCenter.intersects(iOuter)).toBe(true);
+      expect(iCenter.overlaps(iOuter)).toBe(true);
     });
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
-      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+      expect(iLeft.overlaps(iLeftAdjacent)).toBe(false);
     });
   });
 
@@ -558,10 +558,10 @@ describe("PlainDate", () => {
   });
 
   describe("Encloses", () => {
-    it("a and b do not intersect", () => {
+    it("a and b do not overlap", () => {
       expect(iLeft.encloses(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
+    it("a and b partially overlap", () => {
       expect(iLeft.encloses(iCenter)).toBe(false);
       expect(iCenter.encloses(iLeft)).toBe(false);
     });
@@ -576,23 +576,23 @@ describe("PlainDate", () => {
     });
   });
 
-  describe("Intersects", () => {
-    it("a and b do not intersect", () => {
-      expect(iLeft.intersects(iRight)).toBe(false);
+  describe("Overlaps", () => {
+    it("a and b do not overlap", () => {
+      expect(iLeft.overlaps(iRight)).toBe(false);
     });
-    it("a and b partially intersect", () => {
-      expect(iLeft.intersects(iCenter)).toBe(true);
-      expect(iCenter.intersects(iLeft)).toBe(true);
+    it("a and b partially overlap", () => {
+      expect(iLeft.overlaps(iCenter)).toBe(true);
+      expect(iCenter.overlaps(iLeft)).toBe(true);
     });
     it("a encloses b", () => {
-      expect(iOuter.intersects(iCenter)).toBe(true);
+      expect(iOuter.overlaps(iCenter)).toBe(true);
     });
     it("b encloses a", () => {
-      expect(iCenter.intersects(iOuter)).toBe(true);
+      expect(iCenter.overlaps(iOuter)).toBe(true);
     });
     it("b starts when a ends", () => {
       // TODO: test for inclusivity
-      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+      expect(iLeft.overlaps(iLeftAdjacent)).toBe(false);
     });
   });
 

@@ -119,7 +119,7 @@ export default class Interval<
    * Does this interval overlap another?
    * Assumes start is inclusive and end is exclusive
    */
-  intersects(b: Interval<T>): boolean {
+  overlaps(b: Interval<T>): boolean {
     const { _compare } = this;
     const aS_bS = _compare(this.start, b.start);
     const aS_bE = _compare(this.start, b.end);
