@@ -1,6 +1,6 @@
 {
   "name": "temporal-interval",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Interval class for use with Temporal Instant and PlainDateTime",
   "license": "ISC",
   "repository": {

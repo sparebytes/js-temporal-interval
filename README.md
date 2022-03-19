@@ -63,6 +63,8 @@ function example({ interval, point, other, duration }) {
   log("      equals():", interval.equals(other));
   log("    encloses():", interval.encloses(other));
   log("    overlaps():", interval.overlaps(other));
+  log("intersection():", interval.intersection(other));
+  log("       union():", interval.union(other));
   log("  toDuration():", interval.toDuration());
   log("     iterate():", Array.from(interval.iterate(duration)));
   log("    toString():", interval.toString());
