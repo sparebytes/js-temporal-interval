@@ -1,18 +1,26 @@
 import type { Temporal } from "@js-temporal/polyfill";
+type Instant = Temporal.Instant;
+type PlainDateTime = Temporal.PlainDateTime;
+type ZonedDateTime = Temporal.ZonedDateTime;
+type Duration = Temporal.Duration;
+type TypeOfTemporal = ReturnType<typeof getTemporalPolyfill>;
 
 import { getTemporalPolyfill } from "./temporalPolyfill";
 
-export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTime> {
-  private readonly _type: T extends Temporal.Instant
-    ? typeof Temporal.Instant
-    : T extends Temporal.PlainDateTime
-    ? typeof Temporal.PlainDateTime
+export default class Interval<T extends Instant | PlainDateTime | ZonedDateTime> {
+  private readonly _type: T extends Instant
+    ? TypeOfTemporal["Instant"]
+    : T extends PlainDateTime
+    ? TypeOfTemporal["PlainDateTime"]
+    : T extends ZonedDateTime
+    ? TypeOfTemporal["ZonedDateTime"]
     : never;
   private readonly _compare: (a: T, b: T) => Temporal.ComparisonResult;
   readonly start: T;
   readonly end: T;
 
-  constructor(start: T, end: T | Temporal.Duration) {
+  constructor(start: T, end: T | Duration) {
+    const Temporal = getTemporalPolyfill();
     if (start == null) {
       throw new Error("start cannot be null");
     }
@@ -28,8 +36,9 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
     });
 
     if (
-      this._type !== getTemporalPolyfill().Instant &&
-      this._type !== getTemporalPolyfill().PlainDateTime
+      this._type !== Temporal.Instant &&
+      this._type !== Temporal.ZonedDateTime &&
+      this._type !== Temporal.PlainDateTime
     ) {
       throw new TypeError(`start is not of type Temporal.Instant or Temporal.PlainDateTime.`);
     }
@@ -111,26 +120,7 @@ export default class Interval<T extends Temporal.Instant | Temporal.PlainDateTim
   /**
    * What is the duration between the start and end?
    */
-  toDuration(
-    options?: T extends Temporal.Instant
-      ? Temporal.DifferenceOptions<
-          "hour" | "minute" | "second" | "millisecond" | "microsecond" | "nanosecond"
-        >
-      : T extends Temporal.PlainDateTime
-      ? Temporal.DifferenceOptions<
-          | "year"
-          | "month"
-          | "week"
-          | "day"
-          | "hour"
-          | "minute"
-          | "second"
-          | "millisecond"
-          | "microsecond"
-          | "nanosecond"
-        >
-      : never,
-  ): Temporal.Duration {
+  toDuration(options?: Parameters<T["since"]>[1]): Duration {
     return this.end.since(this.start as any, options as any);
   }
 

@@ -9,6 +9,8 @@ describe("Validation", () => {
   const jsDate = new Date();
   const instantA = T.Instant.from("2012-01-01Z");
   const instantB = T.Instant.from("2018-01-01Z");
+  const zonedDateTimeA = T.ZonedDateTime.from("2012-01-01[utc]");
+  const zonedDateTimeB = T.ZonedDateTime.from("2018-01-01[utc]");
   const plainDateTimeA = T.PlainDateTime.from("2012-01-01");
   const plainDateTimeB = T.PlainDateTime.from("2018-01-01");
 
@@ -20,6 +22,8 @@ describe("Validation", () => {
   it("end type must be as start type", () => {
     expect(() => new Interval(instantA, plainDateTimeB)).toThrow();
     expect(() => new Interval(plainDateTimeA, instantB)).toThrow();
+    expect(() => new Interval(zonedDateTimeA, instantB)).toThrow();
+    expect(() => new Interval(plainDateTimeA, zonedDateTimeB)).toThrow();
     expect(() => new Interval(instantA, jsDate)).toThrow();
     expect(() => new Interval(instantA, null)).toThrow();
     expect(() => new Interval(instantA, undefined)).toThrow();
@@ -134,6 +138,132 @@ describe("Instant", () => {
     it("JSON.stringify", () => {
       expect(JSON.stringify(iCenter)).toBe(
         '{"start":"2005-01-01T00:00:00Z","end":"2025-01-01T00:00:00Z"}',
+      );
+    });
+  });
+});
+
+describe("ZonedDateTime", () => {
+  const pointA = T.ZonedDateTime.from("2012-01-01[utc]");
+  const pointB = T.ZonedDateTime.from("2018-01-01[utc]");
+  const iOuter = new Interval(
+    T.ZonedDateTime.from("1990-01-01[utc]"),
+    T.ZonedDateTime.from("2040-01-01[utc]"),
+  );
+  const iLeft = new Interval(
+    T.ZonedDateTime.from("2000-01-01[utc]"),
+    T.ZonedDateTime.from("2010-01-01[utc]"),
+  );
+  const iLeftAdjacent = new Interval(
+    T.ZonedDateTime.from("2010-01-01[utc]"),
+    T.ZonedDateTime.from("2020-01-01[utc]"),
+  );
+  const iCenter = new Interval(
+    T.ZonedDateTime.from("2005-01-01[utc]"),
+    T.ZonedDateTime.from("2025-01-01[utc]"),
+  );
+  const iRight = new Interval(
+    T.ZonedDateTime.from("2020-01-01[utc]"),
+    T.ZonedDateTime.from("2030-01-01[utc]"),
+  );
+
+  describe("Contains", () => {
+    it("point is before interval", () => {
+      expect(iRight.contains(pointA)).toBe(false);
+    });
+    it("point is inside interval", () => {
+      expect(iCenter.contains(pointB)).toBe(true);
+    });
+    it("point is after interval", () => {
+      expect(iLeft.contains(pointB)).toBe(false);
+    });
+  });
+
+  describe("Equals", () => {
+    it("a and b equal", () => {
+      expect(iCenter.equals(iCenter)).toBe(true);
+    });
+    it("a and b do not equal", () => {
+      expect(iLeft.equals(iRight)).toBe(false);
+    });
+  });
+
+  describe("Encloses", () => {
+    it("a and b do not intersect", () => {
+      expect(iLeft.encloses(iRight)).toBe(false);
+    });
+    it("a and b partially intersect", () => {
+      expect(iLeft.encloses(iCenter)).toBe(false);
+      expect(iCenter.encloses(iLeft)).toBe(false);
+    });
+    it("a encloses b", () => {
+      expect(iOuter.encloses(iCenter)).toBe(true);
+    });
+    it("b encloses a", () => {
+      expect(iCenter.encloses(iOuter)).toBe(false);
+    });
+    it("b starts when a ends", () => {
+      expect(iLeft.encloses(iLeftAdjacent)).toBe(false);
+    });
+  });
+
+  describe("Intersects", () => {
+    it("a and b do not intersect", () => {
+      expect(iLeft.intersects(iRight)).toBe(false);
+    });
+    it("a and b partially intersect", () => {
+      expect(iLeft.intersects(iCenter)).toBe(true);
+      expect(iCenter.intersects(iLeft)).toBe(true);
+    });
+    it("a encloses b", () => {
+      expect(iOuter.intersects(iCenter)).toBe(true);
+    });
+    it("b encloses a", () => {
+      expect(iCenter.intersects(iOuter)).toBe(true);
+    });
+    it("b starts when a ends", () => {
+      // TODO: test for inclusivity
+      expect(iLeft.intersects(iLeftAdjacent)).toBe(false);
+    });
+  });
+
+  describe("Duration", () => {
+    it("toDuration", () => {
+      expect(T.Duration.compare(iCenter.toDuration(), "P7305D")).toBe(0);
+    });
+  });
+
+  describe("Iterate", () => {
+    it("iterate", () => {
+      const actual = Array.from(
+        new Interval(
+          T.ZonedDateTime.from("2000-01-01T01:00:00[utc]"),
+          T.ZonedDateTime.from("2000-01-01T06:00:00[utc]"),
+        ).iterate(T.Duration.from("PT1H")),
+      );
+      const expected = [
+        T.ZonedDateTime.from("2000-01-01T01:00:00[utc]"),
+        T.ZonedDateTime.from("2000-01-01T02:00:00[utc]"),
+        T.ZonedDateTime.from("2000-01-01T03:00:00[utc]"),
+        T.ZonedDateTime.from("2000-01-01T04:00:00[utc]"),
+        T.ZonedDateTime.from("2000-01-01T05:00:00[utc]"),
+      ];
+      expect(actual.length).toBe(expected.length);
+      for (let i = 0; i < actual.length; i++) {
+        expect(actual[i].toString()).toBe(expected[i].toString());
+      }
+    });
+  });
+
+  describe("Encoding", () => {
+    it("toString", () => {
+      expect(iCenter.toString()).toBe(
+        "2005-01-01T00:00:00+00:00[UTC]--2025-01-01T00:00:00+00:00[UTC]",
+      );
+    });
+    it("JSON.stringify", () => {
+      expect(JSON.stringify(iCenter)).toBe(
+        '{"start":"2005-01-01T00:00:00+00:00[UTC]","end":"2025-01-01T00:00:00+00:00[UTC]"}',
       );
     });
   });
