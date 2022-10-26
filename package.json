@@ -68,7 +68,7 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "typescript": "^4.6.2"
   },
-  "types": "./dist/Interval.d.ts",
+  "types": "./dist/index.d.ts",
   "browser": "./dist/index.umd.js",
   "directories": {
     "lib": "lib",
