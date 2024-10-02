@@ -19,7 +19,8 @@
     ".": [
       {
         "import": "./dist/index.esm.js",
-        "default": "./dist/index.cjs"
+        "default": "./dist/index.cjs",
+        "types": "./dist/index.d.ts"
       },
       "./dist/index.cjs"
     ]
