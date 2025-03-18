@@ -13,7 +13,7 @@ See [Stack Blitz Example](https://stackblitz.com/edit/temporal-interval)
 ## Installation
 
 ```sh
-yarn install @js-temporal/polyfill temporal-interval
+npm install @js-temporal/polyfill temporal-interval
 ```
 
 ## Usage
